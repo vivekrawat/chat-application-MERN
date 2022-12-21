@@ -15,7 +15,7 @@ import animationData from "../../animations/typing.json";
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./UpdateGroupChatModal";
 import { ChatState } from "../../Context/ChatProvider";
-const ENDPOINT = "http://localhost:5000";
+const ENDPOINT = process.env.REACT_APP_BACKEND_URL;
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -139,24 +139,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   });
 
   const typingHandler = (e) => {
-    setNewMessage(e.target.value);
-
+    setNewMessage(e.target.value)
     if (!socketConnected) return;
-
     if (!typing) {
       setTyping(true);
       socket.emit("typing", selectedChat._id);
     }
-    let lastTypingTime = new Date().getTime();
-    var timerLength = 3000;
     setTimeout(() => {
-      var timeNow = new Date().getTime();
-      var timeDiff = timeNow - lastTypingTime;
-      if (timeDiff >= timerLength && typing) {
-        socket.emit("stop typing", selectedChat._id);
-        setTyping(false);
-      }
-    }, timerLength);
+      socket.emit("stop typing", selectedChat._id);
+      setTyping(false);
+    }, 3000);
   };
 
   return (
