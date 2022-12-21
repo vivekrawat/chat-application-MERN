@@ -13,6 +13,7 @@ const chatModel = mongoose.Schema(
   },
   { timestamps: true }
 );
+chatModel.index( { "updatedAt": 1 }, { expireAfterSeconds: 122400 } )
 
 const Chat = mongoose.model("Chat", chatModel);
 
