@@ -6,8 +6,10 @@ import { useToast } from "@chakra-ui/toast";
 import axios from "axios";
 import { useState } from "react";
 import { useHistory } from "react-router";
+import { ChatState }from "../../Context/ChatProvider";
 
 const Signup = () => {
+  const { setUser }  = ChatState()
   const [show, setShow] = useState(false);
   const handleClick = () => setShow(!show);
   const toast = useToast();
@@ -69,6 +71,7 @@ const Signup = () => {
         position: "bottom",
       });
       localStorage.setItem("userInfo", JSON.stringify(data));
+      setUser(data)
       setPicLoading(false);
       history.push("/chats");
     } catch (error) {
