@@ -20,7 +20,7 @@ import { Tooltip } from "@chakra-ui/tooltip";
 import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import { useHistory } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { useToast } from "@chakra-ui/toast";
 import ChatLoading from "./miscellanenous/ChatLoading";
@@ -39,6 +39,7 @@ function SideDrawer() {
   const [loadingChat, setLoadingChat] = useState(false);
 
   const {
+    selectedChat,
     setSelectedChat,
     user,
     notification,
@@ -51,6 +52,13 @@ function SideDrawer() {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const history = useHistory();
 
+  useEffect(() => {
+    //  console.log(selectedChat)
+    // 
+     setNotification(notification.filter(n => n.chat._id !== selectedChat._id))
+    //  console.log(notification)
+    },[selectedChat])
+  
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
     history.push("/");
