@@ -7,6 +7,7 @@ import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { useHistory } from "react-router-dom";
 import { ChatState }from "../../Context/ChatProvider";
+import ForgotPassword from "./ForgotPassword";
 
 const Login = () => {
   const { setUser }  = ChatState()
@@ -16,14 +17,34 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [forgotPassword, setForgotPassword] = useState(false)
+  const [forgotPData, SetForgotPData] = useState({})
   const history = useHistory();
+  const config = {
+    headers: {
+      "Content-type": "application/json",
+    },
+  };
+  const enableForgotPassword = async () => {
+    const { data } = await axios.post(
+      "/api/user/forgotpassword",
+      { email },
+      config
+    );
+    SetForgotPData(data)
+    console.log(data)
+    setForgotPassword(true)
+  }
+  const disableForgotPassword = () => {
+    console.log('buttton chlicked')
+    setForgotPassword(false)
+  }
 
   const submitHandler = async () => {
     setLoading(true);
     if (!email || !password) {
       toast({
-        title: "Please Fill all the Feilds",
+        title: "Please Fill all the Fields",
         status: "warning",
         duration: 5000,
         isClosable: true,
@@ -35,11 +56,6 @@ const Login = () => {
 
     // console.log(email, password);
     try {
-      const config = {
-        headers: {
-          "Content-type": "application/json",
-        },
-      };
 
       const { data } = await axios.post(
         "/api/user/login",
@@ -71,9 +87,12 @@ const Login = () => {
       setLoading(false);
     }
   };
-
   return (
     <VStack spacing="10px">
+      {forgotPassword && <div>
+        <ForgotPassword data={forgotPData} disableForgotPassword={disableForgotPassword}/>
+      </div>}
+      {!forgotPassword && <div>
       <FormControl isRequired>
         <FormLabel>Email Address</FormLabel>
         <Input
@@ -99,10 +118,17 @@ const Login = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
+      {/* forgot password */}
+      <Button colorScheme="red" variant="ghost" size="xs"
+      style={{marginTop: 2, padding: 2}}
+      onClick={enableForgotPassword}>
+        Forgot Password
+      </Button>
+      {/* login button */}
       <Button
         colorScheme="blue"
         width="100%"
-        style={{ marginTop: 15 }}
+        style={{ marginTop:2 }}
         onClick={submitHandler}
         isLoading={loading}
       >
@@ -111,6 +137,7 @@ const Login = () => {
       <Button
         variant="solid"
         colorScheme="red"
+        style={{ marginTop:12 }}
         width="100%"
         onClick={() => {
           setEmail("guest@example.com");
@@ -119,6 +146,7 @@ const Login = () => {
       >
         Get Guest User Credentials
       </Button>
+      </div>}
     </VStack>
   );
 };

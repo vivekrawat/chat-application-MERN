@@ -12,13 +12,15 @@ const userSchema = mongoose.Schema(
       default:
         "https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     },
+    passwordResetToken: {type: String},
+    resetTokenDate: {type: Date},
     isAdmin: {
       type: Boolean,
       required: true,
       default: false,
     },
   },
-  { timestaps: true }
+  { timestamps: true }
 );
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
